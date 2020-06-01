@@ -7,7 +7,11 @@
 
 using namespace std;
 
-// HW1 #3
+#define GRAY_R_C 0.299
+#define GRAY_G_C 0.587
+#define GRAY_B_C 0.114
+
+// HW0 #3
 // const Image& im: input image
 // return the corresponding grayscale image
 Image rgb_to_grayscale(const Image& im)
@@ -16,10 +20,13 @@ Image rgb_to_grayscale(const Image& im)
   Image gray(im.w,im.h,1); // create a new grayscale image (note: 1 channel)
   
   // TODO: calculate the pixels of 'gray'
-  
-  
-  NOT_IMPLEMENTED();
-  
+
+  int gray_size = gray.h * gray.w;
+
+  for (int i = 0; i < gray.h * gray.w; i ++) {
+    gray.data[i] = ( (im.data[i] * GRAY_R_C) + (im.data[i + gray_size] * GRAY_G_C) + (im.data[i + 2 * gray_size] * GRAY_B_C) );
+  }
+
   return gray;
   }
 
@@ -44,7 +51,7 @@ Image grayscale_to_rgb(const Image& im, float r, float g, float b)
 
 
 
-// HW1 #4
+// HW0 #4
 // Image& im: input image to be modified in-place
 // int c: which channel to shift
 // float v: how much to shift
@@ -53,12 +60,15 @@ void shift_image(Image& im, int c, float v)
   assert(c>=0 && c<im.c); // needs to be a valid channel
   
   // TODO: shift all the pixels at the specified channel
-  
-  NOT_IMPLEMENTED();
-  
+
+  for (int i = c * im.h * im.w; i < (c+1) * im.h * im.w; i++) {
+    im.data[i] += v;
+  } 
+ 
+  return;  
   }
 
-// HW1 #8
+// HW0 #8
 // Image& im: input image to be modified in-place
 // int c: which channel to scale
 // float v: how much to scale
@@ -68,18 +78,24 @@ void scale_image(Image& im, int c, float v)
   
   // TODO: scale all the pixels at the specified channel
   
-  NOT_IMPLEMENTED();
-  
+
+  for (int i = c * im.h * im.w; i < (c+1) * im.h * im.w; i++) {
+    im.data[i] *= v;
+  } 
+ 
+  return;
   }
 
 
-// HW1 #5
+// HW0 #5
 // Image& im: input image to be modified in-place
 void clamp_image(Image& im)
   {
   // TODO: clamp all the pixels in all channel to be between 0 and 1
   
-  NOT_IMPLEMENTED();
+  for (int i = 0; i < im.c * im.h * im.w; i ++) {
+    im.data[i] = (im.data[i] < 0) ? 0 : (im.data[i] > 1 ? 1 : im.data[i]);
+  }
   
   }
 
@@ -95,7 +111,7 @@ float min(float a, float b, float c)
   }
 
 
-// HW1 #6
+// HW0 #6
 // Image& im: input image to be modified in-place
 void rgb_to_hsv(Image& im)
   {
@@ -103,23 +119,127 @@ void rgb_to_hsv(Image& im)
   
   // TODO: Convert all pixels from RGB format to HSV format
   
-  NOT_IMPLEMENTED();
+  int im_size = im.h * im.w;
+
+  for (int i = 0; i < im_size; i ++) {
+    float R = im.data[i];
+    float G = im.data[i + im_size];
+    float B = im.data[i + 2 * im_size];
+
+    float V = max (max(R, G), B);
+    float m = min (min(R, G), B);
+
+    float C = V - m;
+
+    float S = 0.0;
+    if (V)
+      S =  C / V;
+
+    float H = 0;
+    float Hp = 0;
+
+    if (C) {
+
+      if (V == R) 
+        Hp = (G - B) / C;
+      else if (V == G) 
+        Hp = (B - R) / C + 2;
+      else 
+        Hp = (R - G) / C + 4;
+
+      H = (Hp < 0) ? (Hp / 6 + 1) : (Hp / 6);
+
+      while (H >= 1)
+        H --;
+      while (H < 0)
+        H ++;
+    }
+
+
+    im.data[i] = H;
+    im.data[i + im_size] = S;
+    im.data[i + 2 * im_size] = V;
+  }
+
+  return;
   
   }
 
-// HW1 #7
+// HW0 #7
 // Image& im: input image to be modified in-place
 void hsv_to_rgb(Image& im)
   {
   assert(im.c==3 && "only works for 3-channels images");
   
   // TODO: Convert all pixels from HSV format to RGB format
-  
-  NOT_IMPLEMENTED();
-  
+   int im_size = im.h * im.w;
+
+  for (int i = 0; i < im_size; i ++) {
+    float H = im.data[i];
+    float S = im.data[i + im_size];
+    float V = im.data[i + 2 * im_size];
+
+    float C = S * V;
+
+    float X = C * (1 - fabs( fmod((6 * H), 2) - 1));
+
+    float m = V - C;
+
+    float Rp, Gp, Bp;
+
+    if (H >= 0 && H < (float) 1/6) {
+      Rp = C;
+      Gp = X;
+      Bp = 0;
+    }
+
+    else if ( H >= (float) 1/6 && H < (float) 2/6) {
+      Rp = X;
+      Gp = C;
+      Bp = 0;
+    }
+
+    else if ( H >= (float) 2/6 && H < (float) 3/6) {
+      Rp = 0;
+      Gp = C;
+      Bp = X;
+    }
+
+    else if ( H >= (float) 3/6 && H < (float) 4/6) {
+      Rp = 0;
+      Gp = X;
+      Bp = C;
+    }
+
+    else if ( H >= (float) 4/6 && H < (float) 5/6) {
+      Rp = X;
+      Gp = 0;
+      Bp = C;
+    }
+
+    else {
+      Rp = C;
+      Gp = 0;
+      Bp = X;
+    }
+
+ 
+
+    float R = Rp + m;
+    float G = Gp + m;
+    float B = Bp + m;
+
+
+    im.data[i] = R;
+    im.data[i + im_size] = G;
+    im.data[i + 2 * im_size] = B;
+
   }
 
-// HW1 #9
+  return;
+  }
+
+// HW0 #9
 // Image& im: input image to be modified in-place
 void rgb_to_lch(Image& im)
   {
@@ -132,7 +252,7 @@ void rgb_to_lch(Image& im)
   
   }
 
-// HW1 #9
+// HW0 #9
 // Image& im: input image to be modified in-place
 void lch_to_rgb(Image& im)
   {
