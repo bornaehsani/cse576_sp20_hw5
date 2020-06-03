@@ -179,7 +179,18 @@ vector<Match> match_descriptors(const vector<Descriptor>& a, const vector<Descri
   // and populate `m` with good matches!
 
 
-  NOT_IMPLEMENTED();
+    vector<int> match_a2b = match_descriptors_a2b (a, b);
+    vector<int> match_b2a = match_descriptors_a2b (b, a);
+
+
+    for(int i = 0; i < a.size(); i ++) {
+        int mb = match_a2b[i];
+        if (mb > 0) {
+            if (match_b2a[mb] == i) {
+                m.push_back(Match(&a[i], &b[mb], l1_distance(a[i].data, b[mb].data)));
+            }
+        }
+    }
   
   return m;
   }
