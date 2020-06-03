@@ -142,15 +142,23 @@ vector<int> match_descriptors_a2b(const vector<Descriptor>& a, const vector<Desc
   {
   vector<int> ind;
   for(int j=0;j<(int)a.size();j++)
-    {
+  {
     int bind = -1; // <- find the best match (-1: no match)
     float best_distance=1e10f;  // <- best distance
     
     // TODO: find the best 'bind' descriptor in b that best matches a[j]
     // TODO: put your code here:
-    
-    NOT_IMPLEMENTED();
-    }
+
+      // borna check
+      for (int k = 0; k < b.size(); k++) {
+          float dist = l1_distance(a[j].data, b[k].data);
+          if (dist <= best_distance) {
+              best_distance = dist;
+              bind = k;
+          }
+      }
+      ind.push_back(bind);
+  }
   return ind;
   
   }
@@ -169,7 +177,8 @@ vector<Match> match_descriptors(const vector<Descriptor>& a, const vector<Descri
   
   // TODO: use match_descriptors_a2b(a,b) and match_descriptors_a2b(b,a)
   // and populate `m` with good matches!
-  
+
+
   NOT_IMPLEMENTED();
   
   return m;

@@ -197,7 +197,6 @@ Image nms_image(const Image& im, int w)
   //             set response to be very low
 
 
-  // borna check
     for (int y = 0; y < im.h; y ++) {
         for (int x = 0; x < im.w; x ++) {
 
