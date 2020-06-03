@@ -125,10 +125,13 @@ float l1_distance(const vector<float>& a,const vector<float>& b)
   assert(a.size()==b.size() && "Arrays must have same size\n");
   
   // TODO: return the correct number.
-  
-  NOT_IMPLEMENTED();
-  
-  return 0;
+
+    float sum = 0;
+    for (int i = 0; i < a.size(); i ++) {
+        sum += fabs (a[i] - b[i]);
+    }
+
+  return sum;
   }
 
 // HW5 2.2a
