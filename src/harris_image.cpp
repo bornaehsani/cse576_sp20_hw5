@@ -70,12 +70,24 @@ Image make_1d_gaussian(float sigma)
   {
   // TODO: make separable 1d Gaussian.
   
-  NOT_IMPLEMENTED();
-  
-  Image lin(1,1); // set to proper dimension
-  lin.data[0]=1;
-  
-  
+    int w = ceil (sigma * 6);
+    if (!(w % 2))
+        w ++;
+
+    Image lin (w,1,1);
+
+    for (int x = 0; x < lin.w; x ++) {
+
+        int rx = x - (w/2);
+
+        float var = powf(sigma, 2);
+        float c = sqrtf(2 * M_PI) * sigma;
+        float p = -(powf(rx,2)) / (2 * var);
+        float e = expf(p);
+        float val = e / c;
+        lin(x,0,0) = val;
+    }
+
   return lin;
   }
 
@@ -90,9 +102,15 @@ Image smooth_image(const Image& im, float sigma)
   // Hint: to make the filter from vertical to horizontal or vice versa
   // use "swap(filter.h,filter.w)"
   
-  NOT_IMPLEMENTED();
+  Image f = make_1d_gaussian(sigma);
+
+  Image S = convolve_image (im, f, true);
+
+  swap(f.h, f.w);
+
+  S = convolve_image (S, f, true);
   
-  return im;
+  return S;
   }
 
 
