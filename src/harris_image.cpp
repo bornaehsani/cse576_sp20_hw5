@@ -167,8 +167,15 @@ Image cornerness_response(const Image& S, int method)
   // TODO: fill in R, "cornerness" for each pixel using the structure matrix.
   // We'll use formulation det(S) - alpha * trace(S)^2, alpha = .06.
   // E(S) = det(S) / trace(S)
-  
-  NOT_IMPLEMENTED();
+
+
+    for (int y = 0; y < S.h; y ++) {
+        for (int x = 0; x < S.w; x ++) {
+            float det = S(x, y, 0) * S(x, y, 1) - S(x, y, 2) * S(x, y, 2);
+            float tr  = S(x, y, 0) + S(x, y, 1);
+            R(x, y, 0) = det / tr;
+        }
+    }
   
   return R;
   }
