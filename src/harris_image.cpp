@@ -195,8 +195,22 @@ Image nms_image(const Image& im, int w)
   //     for neighbors within w:
   //         if neighbor response greater than pixel response:
   //             set response to be very low
-  
-  NOT_IMPLEMENTED();
+
+
+  // borna check
+    for (int y = 0; y < im.h; y ++) {
+        for (int x = 0; x < im.w; x ++) {
+
+            for (int ny = y - w; ny <= y + w; ny ++) {
+                for (int nx = x - w; nx <= x + w; nx ++) {
+                    if (im.clamped_pixel(nx, ny, 0) > im(x, y, 0)) {
+                        r(x, y, 0) = -0.00001;
+                    }
+                }
+            }  
+        }
+    }
+
   
   return r;
   }
