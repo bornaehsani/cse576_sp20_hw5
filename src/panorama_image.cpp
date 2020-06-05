@@ -206,11 +206,15 @@ Point project_point(const Matrix& H, const Point& p)
   // TODO: project point p with homography H.
   // Remember that homogeneous coordinates are equivalent up to scalar.
   // Have to divide by.... something...
+
+
+  Point pp(0, 0);
+
+  double div = H(2, 0) * p.x + H(2, 1) * p.y + 1;
+  pp.x = ( (1 + H(0, 0)) * p.x + H(0, 1) * p.y + H(0, 2) ) / div;
+  pp.y = ( H(1, 0) * p.x + (1 + H(1, 1)) * p.y + H(1, 2) ) / div;
   
-  NOT_IMPLEMENTED();
-  
-  
-  return Point(0,0);
+  return pp;
   }
 
 // HW5 3.2a
