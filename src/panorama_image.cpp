@@ -224,8 +224,8 @@ Point project_point(const Matrix& H, const Point& p)
 double point_distance(const Point& p, const Point& q)
   {
   // TODO: should be a quick one.
-  NOT_IMPLEMENTED();
-  return 0;
+  double dist = sqrt (pow ((p.x - q.x), 2) + pow ((p.y - q.y), 2));
+  return dist;
   }
 
 // HW5 3.2b
