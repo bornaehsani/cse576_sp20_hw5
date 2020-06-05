@@ -285,19 +285,48 @@ Matrix compute_homography_ba(const vector<Match>& matches)
     double nx = matches[i].b->p.x;
     double ny = matches[i].b->p.y;
     // TODO: fill in the matrices M and b.
-    
-    NOT_IMPLEMENTED();
+
+        M(i * 2, 0) = mx;
+        M(i * 2, 1) = my;
+        M(i * 2, 2) = 1;
+        M(i * 2, 3) = 0;
+        M(i * 2, 4) = 0;
+        M(i * 2, 5) = 0;
+        M(i * 2, 6) = -nx * mx;
+        M(i * 2, 7) = -nx * my;
+
+        M(i * 2 + 1, 0) = 0;
+        M(i * 2 + 1, 1) = 0;
+        M(i * 2 + 1, 2) = 0;
+        M(i * 2 + 1, 3) = mx;
+        M(i * 2 + 1, 4) = my;
+        M(i * 2 + 1, 5) = 1;
+        M(i * 2 + 1, 6) = -ny * mx;
+        M(i * 2 + 1, 7) = -ny * my;
+
+
+        b(i * 2, 0) = nx - mx;
+        b(i * 2 + 1, 0) = ny - my;
     
     }
-  
-  
+ 
   
   Matrix a = solve_system(M, b);
   
   Matrix Hba(3, 3);
   // TODO: fill in the homography H based on the result in a.
-  
-  NOT_IMPLEMENTED();
+
+    Hba(0, 0) = a(0, 0) + 1;
+    Hba(0, 1) = a(1, 0);
+    Hba(0, 2) = a(2, 0);
+
+    Hba(1, 0) = a(3, 0);
+    Hba(1, 1) = a(4, 0) + 1;
+    Hba(1, 2) = a(5, 0);
+
+    Hba(2, 0) = a(6, 0);
+    Hba(2, 1) = a(7, 0);
+    Hba(2, 2) = 1;
   
   return Hba;
   }
