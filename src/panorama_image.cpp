@@ -346,6 +346,8 @@ Matrix RANSAC(vector<Match> m, float thresh, int k, int cutoff)
     return Matrix::identity(3,3);
     }
   
+  int n = 5;
+
   int best = 0;
   Matrix Hba = Matrix::translation_homography(256, 0);
   // TODO: fill in RANSAC algorithm.
@@ -361,19 +363,28 @@ Matrix RANSAC(vector<Match> m, float thresh, int k, int cutoff)
 
 
     // borna check
-    vector<Match> best_inliers = model_inliers(Hba, m, thresh);
+    vector<Match> best_inliers; // = model_inliers(Hba, m, thresh);
     
+    // for k iterations:
     for (int i = 0; i < k; i ++) {
+
+        // shuffle the matches
         randomize_matches(m);
-        Matrix H = compute_homography_ba(m);
-        
+
+        // compute a homography with a few matches (how many??)
+        vector<Match> sample;
+        sample.assign(m.begin(), m.begin() + n);
+        Matrix H = compute_homography_ba(sample);
         vector<Match> inliers = model_inliers(H, m, thresh);
         
+        // if new homography is better than old (how can you tell?):
         if (inliers.size() > best_inliers.size()) {
+            // remember it and how good it is
             Hba = H;
             best_inliers = inliers;
         }
 
+        // if it's better than the cutoff:
         if (best_inliers.size() > cutoff) 
             break;
     } 
