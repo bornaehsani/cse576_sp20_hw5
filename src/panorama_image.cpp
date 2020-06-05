@@ -358,9 +358,26 @@ Matrix RANSAC(vector<Match> m, float thresh, int k, int cutoff)
   //         if it's better than the cutoff:
   //             return it immediately
   // if we get to the end return the best homography
-  
-  NOT_IMPLEMENTED();
-  
+
+
+    // borna check
+    vector<Match> best_inliers = model_inliers(Hba, m, thresh);
+    
+    for (int i = 0; i < k; i ++) {
+        randomize_matches(m);
+        Matrix H = compute_homography_ba(m);
+        
+        vector<Match> inliers = model_inliers(H, m, thresh);
+        
+        if (inliers.size() > best_inliers.size()) {
+            Hba = H;
+            best_inliers = inliers;
+        }
+
+        if (best_inliers.size() > cutoff) 
+            break;
+    } 
+ 
   return Hba;
   }
 
