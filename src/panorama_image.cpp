@@ -207,7 +207,6 @@ Point project_point(const Matrix& H, const Point& p)
   // Remember that homogeneous coordinates are equivalent up to scalar.
   // Have to divide by.... something...
 
-
   Point pp(0, 0);
 
   double div = H(2, 0) * p.x + H(2, 1) * p.y + 1;
@@ -240,8 +239,13 @@ vector<Match> model_inliers(const Matrix& H, const vector<Match>& m, float thres
   vector<Match> inliers;
   // TODO: fill inliers
   // i.e. distance(H*a.p, b.p) < thresh
-  
-  NOT_IMPLEMENTED();
+
+    for (int i = 0; i < m.size(); i ++) {
+        Point pp = project_point(H, m[i].a->p);
+        if (point_distance(pp, m[i].b->p) < thresh) {
+            inliers.push_back(m[i]);
+        }
+    }
   
   return inliers;
   }
