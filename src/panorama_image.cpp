@@ -149,7 +149,6 @@ vector<int> match_descriptors_a2b(const vector<Descriptor>& a, const vector<Desc
     // TODO: find the best 'bind' descriptor in b that best matches a[j]
     // TODO: put your code here:
 
-      // borna check
       for (int k = 0; k < b.size(); k++) {
           float dist = l1_distance(a[j].data, b[k].data);
           if (dist <= best_distance) {
@@ -258,8 +257,11 @@ void randomize_matches(vector<Match>& m)
   // TODO: implement Fisher-Yates to shuffle the array.
   // You might want to use the swap function like:
   // swap(m[0],m[1]) which swaps the first and second element
+    for (int i = m.size()-1; i > 0; i --) {
+        int j = rand() % (i+1);
+        swap(m[i], m[j]);
+    }
   
-  NOT_IMPLEMENTED();
   }
 
 // HW5 3.4
