@@ -345,10 +345,8 @@ Matrix RANSAC(vector<Match> m, float thresh, int k, int cutoff)
     //printf("Need at least 4 points for RANSAC! %zu supplied\n",m.size());
     return Matrix::identity(3,3);
     }
-  
-  int n = 5;
 
-  int best = 0;
+
   Matrix Hba = Matrix::translation_homography(256, 0);
   // TODO: fill in RANSAC algorithm.
   // for k iterations:
@@ -373,12 +371,20 @@ Matrix RANSAC(vector<Match> m, float thresh, int k, int cutoff)
 
         // compute a homography with a few matches (how many??)
         vector<Match> sample;
-        sample.assign(m.begin(), m.begin() + n);
+        sample.assign(m.begin(), m.begin() + 4);
         Matrix H = compute_homography_ba(sample);
         vector<Match> inliers = model_inliers(H, m, thresh);
         
         // if new homography is better than old (how can you tell?):
         if (inliers.size() > best_inliers.size()) {
+            // compute updated homography using all inliers
+            // for (int j = 0; j < inliers.size(); j ++) {
+            //     sample.push_back(inliers[j]);
+            // }
+            // H = compute_homography_ba(sample);
+            // H = compute_homography_ba(inliers);
+            // inliers = model_inliers(H, m, thresh);
+
             // remember it and how good it is
             Hba = H;
             best_inliers = inliers;
@@ -389,6 +395,7 @@ Matrix RANSAC(vector<Match> m, float thresh, int k, int cutoff)
             break;
     } 
  
+  // printf("Inliers: %d\tCutoff: %d\n", best_inliers.size(), cutoff);
   return Hba;
   }
 
