@@ -497,8 +497,10 @@ Image combine_images(const Image& a, const Image& b, const Matrix& Hba, float ab
                  Point pa = Point(i, j);
                  Point pb = project_point(Hba, pa);
    
-                 if ( (pb.x >= topleft.x && pb.x <= botright.x) &&
-                      (pb.y >= topleft.y && pb.y <= botright.y) ) {
+                 //if ( (pb.x >= topleft.x && pb.x <= botright.x) &&
+                 //     (pb.y >= topleft.y && pb.y <= botright.y) ) {
+                 if ( (pb.x >= 0 && pb.x <= b.w) &&
+                      (pb.y >= 0 && pb.y <= b.h) ) {
 
                      c(i, j, k) = b.pixel_bilinear(pb.x, pb.y, k);
 
@@ -509,7 +511,8 @@ Image combine_images(const Image& a, const Image& b, const Matrix& Hba, float ab
 
   
   // We trim the image so there are as few as possible black pixels.
-  return trim_image(c);
+  //return trim_image(c);
+  return c;
   }
 
 // Create a panoramam between two images.
