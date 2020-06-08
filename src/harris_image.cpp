@@ -173,7 +173,12 @@ Image cornerness_response(const Image& S, int method)
         for (int x = 0; x < S.w; x ++) {
             float det = S(x, y, 0) * S(x, y, 1) - S(x, y, 2) * S(x, y, 2);
             float tr  = S(x, y, 0) + S(x, y, 1);
-            R(x, y, 0) = det / tr;
+            if (!method) {
+                R(x, y, 0) = det / tr;
+            }
+            else {
+                R(x, y, 0) = (tr - (sqrtf(powf(tr, 2) - 4 * det))) / 2;
+            }
         }
     }
   
